@@ -40,8 +40,8 @@ export default {
     }
   },
   created() {    
-    this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
-    //this.socket = io("http://127.0.0.1:3000")
+    //this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
+    this.socket = io("http://127.0.0.1:3000")
     this.getWallet()
   }
 }
