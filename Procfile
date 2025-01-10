@@ -1,2 +1,2 @@
 server: node server.js
-web: npm start
+web: vue-cli-service serve
