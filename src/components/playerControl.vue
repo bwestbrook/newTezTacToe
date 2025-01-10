@@ -54,7 +54,7 @@ export default {
                 .at(CONTRACT_ADDRESS)
                 .then((contract) => {
                     let params = {
-                        mutezPerMove: 100,
+                        mutezPerMove: [100,0],
                         player: activeAccount.address
                     }
                     //let inspect = contract.methodsObject.startGame(params)
@@ -63,7 +63,7 @@ export default {
                     
                     const paramsToSend = parameterSchema.EncodeObject(params)
                     console.log(paramsToSend)
-                    return contract.methodsObject.startGame(params).send();
+                    return contract.methodsObject.startGame(paramsToSend).send();
                 })
                 .then((op) => {
                     console.log(`Waiting for ${op.hash} to be confirmed...`);
