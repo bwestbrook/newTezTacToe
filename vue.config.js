@@ -5,6 +5,7 @@ module.exports = defineConfig({
     port: 3000,
     hot: true, // Enable Hot Module Replacement
     liveReload: true, // Enable live reloading
+    disableHostCheck: true
     
     },
   configureWebpack: {
