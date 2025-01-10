@@ -5,10 +5,20 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "node server.js"
   },
   "dependencies": {
+    "@taquito/beacon-wallet": "^21.0.0",
+    "@taquito/remote-signer": "^21.0.0",
+    "@taquito/taquito": "^21.0.0",
+    "browserify": "^17.0.1",
     "core-js": "^3.8.3",
+    "cors": "^2.8.5",
+    "jquery": "^3.7.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "three": "^0.172.0",
     "vue": "^3.2.13"
   },
   "devDependencies": {
