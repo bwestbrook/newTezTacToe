@@ -1,26 +1,7 @@
-<template>
-    <div class="playerPanel" >
-        <div 
-            class="playerDataPanel"
-        >
-         Player 
-        </div>
-        <div 
-            class="actionButton"
-        > 
-            Surrender Game
-        </div>
-        <div @click="createGameBC"
-            class="actionButton"
-        > 
-            Create Game
-        </div>
-     </div>
-</template>
-
 <script>
-//import { CONTRACT_ADDRESS } from '@/constants.js'
-//import { reduceAddress } from '../services/utilities.js'
+
+import { reduceAddress } from '../utilities.js'
+import { NetworkType } from "@airgap/beacon-types";
 import { RemoteSigner } from '@taquito/remote-signer';
 import { NODE_URL, CONTRACT_ADDRESS } from '../constants'
 import { TezosToolkit } from '@taquito/taquito'
@@ -32,11 +13,38 @@ export default {
         "submitMove",
         "createGameService"
     ],
-    props: [
-        "socket",
-        "wallet"
-    ],
+    props: ["socket", "wallet"],
+    data () {
+        return {
+            walletAddress: 'SYNC WALLET'
+        }
+    },
     methods: {
+        async walletState() {
+            console.log(this.wallet, 'do')
+            const activeAccount = await this.wallet.client.getActiveAccount()   
+            Tezos.setProvider(this.wallet)
+            console.log(activeAccount)
+            if (activeAccount) {
+                const reducedAddress = await reduceAddress(activeAccount.address)         
+                this.walletAddress = reducedAddress
+            }
+        },
+        async toggleWallet(){
+            console.log('toggle', this.wallet)
+            const activeAccount = await this.wallet.client.getActiveAccount()              
+            if (activeAccount) {               
+                console.log('b', activeAccount.address, 'disconnecting')       
+                await this.wallet.clearActiveAccount()
+                this.walletAddress = 'SYNC WALLET'                 
+            } else {
+                console.log(NetworkType)
+                console.log(this.wallet, 'requestPermissions')
+                await this.wallet.client.requestPermissions()
+
+            }
+            this.walletState()
+        },
         async submitMove() {
             this.socket.$emit("submitMove")
         },
@@ -67,33 +75,42 @@ export default {
                 .catch((error) => console.log(`Error3: ${JSON.stringify(error, null, 2)}`));
             const balance = await Tezos.tz.getBalance(activeAccount.address)
             console.log('balance', balance.toNumber())
-
-
         },
         async createGame() {
-           
             const activeAccount = await this.wallet.client.getActiveAccount()   
             if (!activeAccount) {
                 return
-            }
-            
+            }       
             this.socket.emit("createGameServer")
-            //this.socket.emit("createGameServer", activeAccount.address, 10)
-            //this.socket.getUserId()
         }
     },
     created() {
-        
+        console.log('creating plaery control')
+        console.log(this.wallet)
         this.socket.on("createGameBC", () => {
             this.createGameBC()
             console.log("Received broadcast:");
        });
-        
-        //console.log(this.socket.emit('createGameServe', this.wallet))
+ 
     }
 }
 
 </script>
+
+
+<template>
+    <div class="playerPanel" > 
+        <div @click="toggleWallet" class="playerDataPanel">
+                {{walletAddress}} 
+        </div>
+        <div class="actionButton"> 
+            Join Game
+        </div>
+        <div class="actionButton" @click="createGameBC" > 
+            Create Game
+        </div>
+     </div>
+</template>
 
 
 <style scoped>
@@ -102,7 +119,7 @@ export default {
     align-content: center;
     justify-content: center;
     flex-direction: column;
-    background-color: #333;
+    background-color: #000000;
     color: #fff;
 
     padding: 5px;

@@ -39,6 +39,16 @@ io.on("connection", function(socket) {
         io.emit("connectedUsers", connectedUsers)
     });
 
+    socket.on("getWallet", function() {
+      console.log("asking for userId (for a friend)", socket.id)
+      io.emit("updateActiveUserId", socket.id)
+    })
+
+    socket.on("resizeGame", function(size) {
+      console.log("asking for userId (for a friend)", size, socket.id)
+      io.emit("updateActiveUserId", socket.id)
+    })
+
     socket.on("getUserId", function() {
       console.log("asking for userId (for a friend)", socket.id)
       io.emit("updateActiveUserId", socket.id)

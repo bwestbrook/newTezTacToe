@@ -1,26 +1,6 @@
-<template>
-    <div class="gameContainer">
-      <div 
-        @mousedown="checkClickDown"
-        @mouseup="checkClickUp"
-        ref="container" 
-        class="gridContainer">
-      </div>
-      <div
-        class="submitMove"
-        @click="submitMove"
-      >
-        Submit Move
-      </div> 
-    </div>
-</template>
-
 <script>
 import * as Three from 'three'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GAME_SIZE } from '../constants.js'
-
-
 
 export default {
   name: 'gameGrid',
@@ -39,18 +19,20 @@ export default {
       player2Plays: {}
     }
   },
+  props: ['windowWidth', 'windowHeight'],
   methods: {
     init: function() {
         this.camera.position.x = 2;
         this.camera.position.y = 0.5;
         this.camera.position.z = 2;
         this.camera.lookAt(this.scene.position)
+        console.log(this.renderer.domElement)
         this.$refs.container.appendChild(this.renderer.domElement);
+       
         this.renderer.render(this.scene, this.camera);
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.animate()
     },
-   
     animate: function() {
       this.controls.update();
       requestAnimationFrame(this.animate);  
@@ -84,8 +66,8 @@ export default {
       this.clickY = evt.y
       const raycaster = new Three.Raycaster();
       const pointer = new Three.Vector2();
-      pointer.x =   ((evt.x - 100) / GAME_SIZE ) * 2 - 1;
-      pointer.y = - ((evt.y - 100) / GAME_SIZE ) * 2 + 1;
+      pointer.x =   ((evt.x - 100) / this.gameSize ) * 2 - 1;
+      pointer.y = - ((evt.y - 100) / this.gameSize ) * 2 + 1;
       console.log(evt.x, evt.y, evt.clientX, evt.clientY)
       console.log(pointer)
       raycaster.setFromCamera( pointer, this.camera );
@@ -112,10 +94,21 @@ export default {
           this.move = []
         }
       }
+    },
+    resizeGame: function() {
+      console.log(this.camera.aspect)
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      console.log(this.camera.aspect)
+      this.camera.updateProjectionMatrix();
+      //this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
   },
   mounted() {
       this.init();
+      //this.$nextTick(() => {
+        //window.addEventListener('resize', this.resizeGame);
+      //})
+    
   },
   created () {
     let intvl = 0.3
@@ -123,7 +116,7 @@ export default {
     this.camera = new Three.PerspectiveCamera(45, 1, 0.5, 10);
     this.scene = new Three.Scene();
     this.renderer = new Three.WebGLRenderer({antialias: true});
-    this.renderer.setSize(GAME_SIZE, GAME_SIZE)
+    this.renderer.setSize(this.windowWidth * 0.75, this.windowWidth  * 0.75)
     let i = -1
     const board = new Three.Group()
     for (i; i < 3; i++) {
@@ -145,6 +138,23 @@ export default {
 }
 </script>
 
+
+<template>
+  <div class="canvas-container">     
+    <div 
+      @mousedown="checkClickDown"
+      @mouseup="checkClickUp"
+      ref="container"
+    >
+    </div>
+
+  </div>
+  <div class="actionButton" @click="createGameBC" > 
+            Submit Move
+  </div>
+</template>
+
+
 <style scoped>
 .gameContainer {
   display: flex;
@@ -154,18 +164,33 @@ export default {
   border-style: solid;
   border: 5px;
   color: aliceblue;
-  background-color: #444;
+  background-color: #000000;
   font-size: 20px;
 }
 .gridContainer{
     width: 800px;
     height: 800px;
-    background-color: #333;
+    background-color: #000000;
     padding: 0px;
     margin: 0px;
     display: flex;
     align-content: center;
     justify-content: center;
     justify-items: center;
+}
+.canvas-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.actionButton {
+    justify-content: center;
+    padding: 5px;
+    margin: 5px;
+    border-style: solid;
+    border-radius: 2px;
+    border-width: 1px;
+    color: #fff;
+    border-color: #fff;
 }
 </style>
