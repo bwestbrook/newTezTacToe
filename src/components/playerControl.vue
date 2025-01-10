@@ -57,12 +57,6 @@ export default {
                         mutezPerMove: 100,
                         player: activeAccount.address
                     }
-                    //let inspect = contract.methodsObject.startGame(params)
-                   
-                    const parameterSchema = contract.methodsObject.startGame(params).parameterSchema;
-                    
-                    const paramsToSend = parameterSchema.EncodeObject(params)
-                    console.log(paramsToSend)
                     return contract.methodsObject.startGame(params).send();
                 })
                 .then((op) => {

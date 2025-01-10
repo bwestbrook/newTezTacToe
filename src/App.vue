@@ -7,10 +7,9 @@ import { BeaconWallet } from '@taquito/beacon-wallet'
 import { NetworkType } from "@airgap/beacon-types";
 import io from 'socket.io-client'
 import mainBody from "./components/mainBody.vue"
-//import { PORT } from '../constants.js'
+
 
 let globalWallet = undefined
-//let wallet = undefined
 
 export default {
   name: 'App',
@@ -41,7 +40,8 @@ export default {
     }
   },
   created() {    
-    this.socket = io("http://127.0.0.1:3000")
+    this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
+    //this.socket = io("http://127.0.0.1:3000")
     this.getWallet()
   }
 }
