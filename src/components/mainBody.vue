@@ -8,7 +8,7 @@
           :socket="socket"
           :wallet="wallet"
       />
-      
+      <gameGrid />
       <playerControl
           :socket="socket"
           :wallet="wallet"
@@ -21,7 +21,7 @@
 <script>
 import { NetworkType } from "@airgap/beacon-types";
 import gameCenter from "./gameCenter.vue"
-//import gameGrid from "./gameGrid.vue"
+import gameGrid from "./gameGrid.vue"
 import playerControl from "./playerControl.vue"
 
 import { reduceAddress } from '../utilities.js'
@@ -36,7 +36,7 @@ export default {
   name: 'HelloWorld',
   props: ['wallet', 'socket'],
   components: { 
-        //gameGrid,
+        gameGrid,
         playerControl,
         gameCenter
   },
