@@ -55,11 +55,6 @@ io.on("connection", function(socket) {
     })
 
     socket.on("createGameServer", function() {
-      //console.log(wallet)
-      //let params = {}
-      //const contract2 = await Tezos.wallet.at(CONTRACT_ADDRESS)
-      //console.log(contract2)
-      // contract2.methodsObject.startGame(address, mutezPerMove).send()
       console.log('game started?')
       io.emit("createGameBC")
     })

@@ -1,10 +1,14 @@
 <template>
-    <mainBody 
-        :wallet="wallet" 
-        :socket="socket"
-        :windowWidth="windowWidth"
-        :windowHeight="windowHeight"
-    />
+  <div class="body">
+      <mainBody class="centerMiddle"
+          :wallet="wallet"
+          :walletAddress="walletAddress"
+          :socket="socket"
+          :tezos="tezos"
+          :windowWidth="windowWidth"
+          :windowHeight="windowHeight"
+      />
+  </div>
 </template>
 
 <script>
@@ -13,6 +17,11 @@ import { BeaconWallet } from '@taquito/beacon-wallet'
 import { NetworkType } from "@airgap/beacon-types";
 import io from 'socket.io-client'
 import mainBody from "./components/mainBody.vue"
+import { reduceAddress } from "./utilities";
+import { RemoteSigner } from '@taquito/remote-signer';
+import { NODE_URL} from './constants'
+import { TezosToolkit } from '@taquito/taquito'
+const Tezos = new TezosToolkit(NODE_URL);
 
 
 let globalWallet = undefined
@@ -27,6 +36,8 @@ export default {
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
       wallet: this.wallet,
+      tezos: this.tezos,
+      walletAddress: this.walletAddress,
       socket: this.socket
     }
   },
@@ -41,16 +52,32 @@ export default {
             }
           })           
           wallet.client.subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, (account) => {
-              this.socket.emit("updateWallet")           
-              console.log(`${BeaconEvent.ACTIVE_ACCOUNT_SET} triggered: `, account);
+              this.brodcastWallet(account)
           })
           this.wallet = wallet
         } else {
           this.wallet = globalWallet
         }
-      
-      console.log(this.wallet, globalWallet)
       return globalWallet
+    },
+    async brodcastWallet (account) {
+      //this.getWallet()
+      console.log('wallet', account)
+      if (account) {
+        const reducedAddress = await reduceAddress(account.address)       
+        Tezos.setWalletProvider(this.wallet)
+        const signer = new RemoteSigner(account.address, NODE_URL )
+        await this.tezos.setProvider({signer:signer})
+        this.walletAddress = 'UNSYNC WALLET ' + reducedAddress
+      } else {
+        this.walletAddress = 'SYNC WALLET'
+      }
+    },
+    async sendTezos(activeAccount, amount) {
+            const signer = new RemoteSigner(activeAccount.address, NODE_URL )
+            await this.tezos.setProvider({signer:signer})
+            await this.tezos.setWalletProvider(this.wallet)
+            await this.tezos.wallet.transfer({amount:amount, to:'tz1Vq5mYKXw1dD9js26An8dXdASuzo3bfE2w'}).send()
     },
     async onResize() {
         this.socket.emit("resizeGame", window.innerWidth)
@@ -60,6 +87,7 @@ export default {
   created() {    
       //this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com:3000")
       this.socket = io("http://127.0.0.1:3000")
+      this.tezos = Tezos
       this.getWallet()
   },
   mounted() {
@@ -72,12 +100,18 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #000000;
   background-color:  #000000;
-  margin-top: 0px;
+  margin:0px;
+  padding:0px
+}
+body{
+  margin:0px;
+  padding:0px
+}
+.centerMiddle{
+  width: 65%;  
+  padding:0px
 }
 </style>

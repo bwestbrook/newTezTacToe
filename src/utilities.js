@@ -17,7 +17,7 @@ return meta_data
 }
 
 export const reduceAddress = async(address) => {
-return address.substring(0, 4) + '..' + address.substring(address.length - 4)
+return 't.' + address.substring(address.length - 4)
 }
 
 

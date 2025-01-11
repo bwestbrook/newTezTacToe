@@ -1,13 +1,27 @@
 <template>
-  <div class="gamePlayFlex">     
+  <div class="mainBody">     
+    <div class="centerBody">
       <playerControl 
           :socket="socket"
           :wallet="wallet"
+          :tezos="tezos"
+          :walletAddress="walletAddress"
       />
-      <gameGrid
+      <gameGrid       
           :windowHeight="windowHeight"
           :windowWidth="windowWidth"
       />
+      <div class="rules">
+          Create by specificying the XTZ/move you want to bet
+          or challeng in pending games there. See if its your turn on a pending game.
+          Once you have been paired with an opponenent your game(s) will become active       
+          Click on your active games and check out the board 
+          Once you've picked your next move "submit" it thte block chain
+          This sends "n" XTZ/move plust +0.01XTZ fee/move to the creators and thextz.life holder
+          If you get 4 in a row you win the 100% of the bets!
+      </div>
+      <div>aaaaaaaaa</div>
+    </div>
   </div>
 </template>
 
@@ -18,29 +32,49 @@ import playerControl from "./playerControl.vue"
 
 export default {
   name: 'HelloWorld',
-  props: ['wallet', 'socket', 'windowWidth', 'windowHeight'],
+  props: ['wallet', 'walletAddress', 'socket', 'tezos', 'windowWidth', 'windowHeight'],
   components: { 
         gameGrid,
         playerControl
   },
   data () {
     return {
-     
     }
   },
   methods: {
 
   },
   created () {
-    console.log('creating main body')
-    console.log(this.wallet)
-   
+  
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
+.mainBody{
+  margin:0px;
+  padding:0px;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+.centerBody{
+  display: flex;
+  margin:auto;
+  flex-direction: column;
+  border-width: 2px;
+  border-color: #fff;
+}
+.rules {
+  align-content: stretch;
+  text-align: justify;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  margin:auto;
+  border-style: inset;
+  border-width: 5px;
+  border-color: #fff;
+}
 </style>
