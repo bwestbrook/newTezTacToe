@@ -1,2 +1,2 @@
-aAdd full game check on smart contract
+Add full game check on smart contract
 Add is player turn to smart contract 
