@@ -102,7 +102,7 @@ export default {
 #app {
   text-align: center;
   color: #000000;
-  background-color:  #000000;
+  background-color: #000000;
   margin:0px;
   padding:0px
 }
