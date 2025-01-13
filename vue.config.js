@@ -7,12 +7,6 @@ module.exports = defineConfig({
     hot: true, // Enable Hot Module Replacement
     liveReload: true, // Enable live reloading
     allowedHosts: 'all',
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true
-      }
-    }
     },
   configureWebpack: {
    
