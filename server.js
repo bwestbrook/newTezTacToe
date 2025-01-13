@@ -20,7 +20,8 @@ let addressesInGame = []
 //const contractStorage = '../src/assets/contract-storage.json'
 
 const PORT = process.env.PORT || 3000;
-io.listen(PORT)
+const URL = process.env.BASE_URL
+io.listen(PORT,URL)
 console.log('io up on ', PORT)
 
 setInterval(() => io.emit('setPort', new Date().toTimeString()), 100);
