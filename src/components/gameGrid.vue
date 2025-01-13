@@ -198,6 +198,7 @@ export default {
           @mousedown="checkClickDown"
           @mouseup="checkClickUp"   
           @mousemove="highlightMove"
+          @click="makeMove"
           ref="container"
       >
       </div>
