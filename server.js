@@ -85,4 +85,3 @@ socket.on("resizeGame", function(width) {
 
 const PORT = process.env.PORT || 3001;
 io.listen(PORT)
-console.log('io is up on ', PORT)
