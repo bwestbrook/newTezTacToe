@@ -20,51 +20,59 @@ export default {
       player2Plays: {}
     }
   },
-  props: ['windowWidth', 'windowHeight'],
-  mounted() {
+  props: ['socket', 'activeGameId', 'windowWidth', 'windowHeight'],
+
+  created () {
+    this.intvl = 0.3
+    this.gameSize = this.windowWidth * 0.6
+    this.board = new Three.Group(),
+    // Materials
+    this.defaultGeometry = new Three.SphereGeometry(0.05, 32, 16)
+    this.defaultMaterial = new Three.MeshMatcapMaterial({color:'blue'})
+    this.highlightGeometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
+    this.highlightMaterial = new Three.MeshMatcapMaterial( {color:'green'} )
+    console.log(this.highlightMaterial)
+    this.player1Geometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
+    this.player1Material = new Three.MeshMatcapMaterial( {color: 'red',} )
+    this.player2Geometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
+    this.player2Material = new Three.MeshMatcapMaterial( {color: 'blue',  opacity: 0.5} )
+    // General 
+    this.scene = new Three.Scene();
+    this.renderer = new Three.WebGLRenderer({antialias: true});
+    this.renderer.setSize(this.gameSize, this.gameSize)
+    //Camera
+    this.camera = new Three.PerspectiveCamera(45, 1, 0.5, 5000);
     this.camera.position.x = 2;
     this.camera.position.y = 0.5;
     this.camera.position.z = 2;
     this.camera.lookAt(this.scene.position)
+  },
+  mounted() {
+    console.log('socket', this.socket.emit)
+    this.buildBoard()
+    this.socket.emit("initGameGrid", 0)
     this.$refs.container.appendChild(this.renderer.domElement);
     this.renderer.render(this.scene, this.camera);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.animate()
-    this.width = this.windowWidth * 0.65
-    //this.updateGrid()
-    //this.highlightConnections() 
-  },
-  created () {
-    let intvl = 0.3
-    this.defaultMaterial = new Three.MeshNormalMaterial(  );
-    this.camera = new Three.PerspectiveCamera(45, 1, 0.5, 10);
-    this.scene = new Three.Scene();
-    this.renderer = new Three.WebGLRenderer({antialias: true});
-    this.renderer.setSize(this.windowWidth * 0.65, this.windowWidth  * 0.65)
-    let i = -1
-    const board = new Three.Group()
-    for (i; i < 3; i++) {
-        let j = -1
-        for (j; j < 3; j++) {
-            let k = -1
-            for (k; k < 3; k++) {
-                let vertex;
-                this.defaultGeometry = new Three.SphereGeometry(0.05, 32, 16)
-                //let geometry = new Three.BoxGeometry(0.2, 0.2, 0.2)
-                vertex = new Three.Mesh(this.defaultGeometry, this.defaultMaterial);  
-                vertex.position.set(i * intvl - 0.5 * intvl, j * intvl - 0.5 * intvl, k * intvl - 0.5 * intvl);
-                board.add(vertex)
-            }
-        }
-    }
-    this.scene.add(board)
+    // Set up socket to receive from server
+    this.socket.on('gameGrid', (gameGrid) => {
+      //
+      this.gameGrid = gameGrid
+    });
+    this.socket.on('resizeGame', (width) => {
+      //
+      this.resizeGameRender(width)
+    });
   },
   methods: {
+    // Three
     animate: function() {
       this.controls.update();
       requestAnimationFrame(this.animate);  
       this.renderer.render(this.scene, this.camera);
     },
+    // event handling
     checkClickDown: function(evt) {
       this.rotate = true
       this.clickX = evt.x
@@ -79,11 +87,94 @@ export default {
       }
     },
     submitMove: function() {
-      console.log(this.move)
       if (this.playerColor === 'red') {
         this.playerColor = 'blue'
       } else {
         this.playerColor = 'red'
+      }
+    },
+    // Game Grid Rendering
+    buildBoard: function() {
+        let i = -1
+        for (i; i < 3; i++) {
+            let j = -1
+            for (j; j < 3; j++) {
+                let k = -1
+                for (k; k < 3; k++) {
+                    let vertex;
+                    vertex = new Three.Mesh(this.defaultGeometry, this.defaultMaterial);  
+                    vertex.position.set(i * this.intvl - 0.5 * this.intvl, j * this.intvl - 0.5 * this.intvl, k * this.intvl - 0.5 * this.intvl);
+                    vertex.coords = [i, j, k]
+                    this.board.add(vertex)
+                }
+            }
+        }
+      this.scene.add(this.board)
+    },
+    highlightMove: function(evt) {
+      const intersects = this.findIntersects(evt)
+      this.updateGridRender()
+      if (intersects.length > 0) {
+        const clickedVertex = intersects[0]
+        clickedVertex.object.material = this.highlightMaterial
+        clickedVertex.object.geometry = this.highlightGeometry
+        if (clickedVertex.object.owner === 0) {
+            clickedVertex.object.owner = 3
+            this.coords = clickedVertex.object.coords
+            let tempOwner = 0
+            if (Number(this.gameData.activePlayer) == 1) {
+              tempOwner = -1
+            } else if (Number(this.gameData.activePlayer) == 2) {
+              tempOwner = -2
+            }
+            this.gameGrid[this.coords[0]][this.coords[1]][this.coords[2]] = tempOwner
+            this.socket.emit("updateGameGrid", this.gameGrid, this.coords, tempOwner, this.activeGameId)
+        }
+      } 
+    },
+    makeMove: function(evt) {
+      const intersects = this.findIntersects(evt)
+      if (intersects.length > 0) {
+          let thisVertex = intersects[0]
+          const i = thisVertex.object.coords[0]
+          const j = thisVertex.object.coords[1]
+          const k = thisVertex.object.coords[2]
+          this.gameGrid[i][j][k] = 1
+      }
+      this.updateGridRender()
+    },
+    resizeGameRender: function(width) {
+        this.gameSize = width * 0.65
+        console.log('render', width)
+        this.renderer.setSize(this.gameSize, this.gameSize)
+    },
+    // Game Play Utilities
+    updateGridRender: function() {
+      if (!this.gameGrid) {
+        return
+      }
+      let verticies;
+      verticies = this.board.children
+      console.log(this.gameGrid)
+      let i = 0;
+      for (i; i < verticies.length; i++) {
+          let thisVertex;
+          thisVertex = verticies[i]
+          const x = thisVertex.coords[0]
+          const y = thisVertex.coords[1]
+          const z = thisVertex.coords[2]
+          const gameGridOwner = this.gameGrid[x][y][z]
+          if (gameGridOwner == 0) {
+            thisVertex.material = this.defaultMaterial
+            thisVertex.geometry = this.defaultGeometry
+          } else if (gameGridOwner == 1) {
+            thisVertex.material = this.player1Material
+            thisVertex.geometry = this.player1Geometry
+          }
+          else if (gameGridOwner == 2) {
+            thisVertex.material = this.player2Material
+            thisVertex.geometry = this.player2Geometry
+          }
       }
     },
     findIntersects: function(evt) {     
@@ -93,101 +184,37 @@ export default {
       let intersects = []
       const raycaster = new Three.Raycaster();
       const pointer = new Three.Vector2();
-      pointer.x =   ((evt.offsetX) / this.rendererWidth ) * 2 - 1;
-      pointer.y =   (-1 * ((evt.offsetY) / this.rendererWidth ) * 2) + 1;
-      raycaster.setFromCamera( pointer, this.camera );
+      console.log(this.renderer.domElement.getBoundingClientRect().x, this.gameSize)
+      const offset_x = this.renderer.domElement.getBoundingClientRect().x
+      const offset_y = this.renderer.domElement.getBoundingClientRect().y
+      pointer.x = 2 * (evt.clientX - offset_x) / this.gameSize - 1
+      pointer.y = -2 * (evt.clientY - offset_y) / this.gameSize + 1
+      console.log(evt.clientX, evt.clientY)
+      raycaster.setFromCamera( pointer, this.camera );     
       intersects = raycaster.intersectObjects(this.scene.children)
       return intersects
     },
-    deHighlightGrid: function() {
-      let i = 1
-      for (i; i < 5; i++) {
-        let j = 1
-        for (j; j < 5; j++) {
-          let k = 1
-          for (k; k < 5; k++) {
-            console.log(this.gameGrid)
-            if (this.gameGrid[i][j][k] < 0) {
-              this.socket.emit("updateGameGrid", this.gameGrid, [i, j, k], 0, this.activeGameId)
-            }  
-          }
-        }
-      }
+    // Socket
+    updateGameGrid: function(gameGrid) {
+      this.gameGrid = gameGrid
     },
-    highlightMove: function(evt) {
-      ///if (!this.gameData.gameDisabled) {
-        //return;
-      //}
-      //if (this.gameData.activeWallet != this.gameData.addressesInGame[this.gameData.activePlayer - 1]){
-        //return;
-      //} 
-      
-      const intersects = this.findIntersects(evt)
-      this.deHighlightGrid()
-      if (intersects.length > 0) {
-        const clickedVertex = intersects[0]
-        if (clickedVertex.object.owner === 0) {
-            clickedVertex.object.owner = 3
-            this.coords = clickedVertex.object.coords
-            let tempOwner = 0
-            console.log(this.gameData)
-            if (Number(this.gameData.activePlayer) == 1) {
-              tempOwner = -1
-            } else if (Number(this.gameData.activePlayer) == 2) {
-              tempOwner = -2
-            }
-            this.gameGrid[this.coords[0]][this.coords[1]][this.coords[2]] = tempOwner
-            this.socket.emit("updateGameGrid", this.gameGrid, this.coords, tempOwner, this.activeGameId)
-        }
-      }
+    resizeGame: function(width) {
+      this.gameSize = width
+      this.resizeGameRender()
     },
-    makeMove: function(evt) {
-      //requestAnimationFrame(this.movePlayGrid);
-      let intersects = []
-      this.clickX = evt.x 
-      this.clickY = evt.y
-      const raycaster = new Three.Raycaster();
-      const pointer = new Three.Vector2();
-      pointer.x =   ((evt.x - 100) / this.windowWidth * 0.65) * 2 - 1;
-      pointer.y = - ((evt.y - 100) / this.windowWidth * 0.65) * 2 + 1;
-      raycaster.setFromCamera( pointer, this.camera );
-      //this.scene.add(new Three.ArrowHelper(raycaster.ray.direction, raycaster.ray.origin, 300, 0xff0000) );
-      intersects = raycaster.intersectObjects(this.scene.children)
-      if (intersects.length > 0 && !this.moveMade) { 
-        const clickedVertex = intersects[0]
-        let new_geometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
-        let new_material = new Three.MeshBasicMaterial( {color: this.playerColor, transparent: true, opacity: 0.5} );
-        clickedVertex.object.material = new_material
-        clickedVertex.object.geometry = new_geometry
-        this.renderer.render(this.scene, this.camera);
-        this.moveMade = true
-        this.move = clickedVertex.object.position
-      } else if (this.moveMade) {
-        const clickedVertex = intersects[0]
-        if (clickedVertex && clickedVertex.object.geometry != this.defaultGeometry) {
-          clickedVertex.object.geometry = this.defaultGeometry
-          clickedVertex.object.material = this.defaultMaterial
-          this.moveMade = false
-          this.move = []
-        }
-      }
-    },
-    resizeGame: function() {
-      this.camera.aspect = this.window.innerWidth / this.window.innerHeight;    
-      this.camera.updateProjectionMatrix();
-      //this.renderer.setSize(this.windowWidth * 0.65, this.windowWidth  * 0.65)
-    }
   }
 }
 </script>
 
 
 <template>
-  <div class="canvas-container">     
+  <div class="canvas-container" >     
       <div class="gameBox"
           @mousedown="checkClickDown"
           @mouseup="checkClickUp"   
+          @mousemove="highlightMove"
           ref="container"
+          
       >
       </div>
   </div>

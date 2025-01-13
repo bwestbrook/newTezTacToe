@@ -11,8 +11,11 @@ export default {
     props: ["socket", "wallet", "tezos", "walletAddress"],
     data () {
         return {
-           
+            activeGameId: 0        
         }
+    },
+    created() {
+        this.socket.emit("updateActiveGame", this.activeGameId)
     },
     methods: {
         async toggleWallet(){
@@ -65,8 +68,6 @@ export default {
                 .then((hash) => console.log(`Operation injected: https://ghost.tzstats.com/${hash}`))
                 .catch((error) => console.log(`Error3: ${JSON.stringify(error, null, 2)}`));
         }
-    },
-    created() {
     }
 }
 

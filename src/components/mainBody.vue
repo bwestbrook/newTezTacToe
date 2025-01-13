@@ -10,6 +10,7 @@
       <gameGrid       
           :windowHeight="windowHeight"
           :windowWidth="windowWidth"
+          :socket="socket"
       />
       <div class="rules">
           Create by specificying the XTZ/move you want to bet
