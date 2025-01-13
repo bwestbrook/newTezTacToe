@@ -85,12 +85,17 @@ export default {
   },
   created() {    
       //console.log(process.env.PORT)
-      this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
+      const socket = io()
+      socket.on("setPort", function(port) {
+        console.log(port)
+      })
+
+      //this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
       
       console.log('######################')
       console.log('######################')
       console.log('######################')
-      //this.socket = io("localhost:3001")
+      this.socket = io("localhost:3000")
       console.log(this.socket)
       //const PORT = this.socket.io.engine.port
       //console.log(PORT)

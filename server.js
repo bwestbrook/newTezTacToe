@@ -2,7 +2,7 @@ const { connect } = require('http2');
 const { connected } = require('process');
 const cors = require('cors')();
 const server = require('express')();
-const https = require('https').createServer(server);
+const http = require('http').createServer(server);
 const io = require('socket.io')(http ,
         {
             cors: {
@@ -19,15 +19,16 @@ let addressesInGame = []
 
 //const contractStorage = '../src/assets/contract-storage.json'
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 io.listen(PORT)
 console.log('io up on ', PORT)
 
+io.emit("setPort", PORT)
 
 io.on("connection", function(socket) {
 
      // User Handling 
-    console.log(socket)
+    //console.log(socket)
     console.log("user " + socket.id + " connected");
     idx = connectedUsers.length
     connectedUsers[idx] = (socket.id)
