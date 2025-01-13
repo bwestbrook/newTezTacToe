@@ -31,7 +31,6 @@ export default {
     this.defaultMaterial = new Three.MeshNormalMaterial()
     this.highlightGeometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
     this.highlightMaterial = new Three.MeshMatcapMaterial( {color:'green'} )
-    console.log(this.highlightMaterial)
     this.player1Geometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
     this.player1Material = new Three.MeshMatcapMaterial( {color: 'red',  opacity: 0.5} )
     this.player2Geometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
@@ -48,7 +47,6 @@ export default {
     this.camera.lookAt(this.scene.position)
   },
   mounted() {
-    console.log('socket', this.socket.emit)
     this.buildBoard()
     this.socket.emit("initGameGrid", 0)
     this.$refs.container.appendChild(this.renderer.domElement);
@@ -145,7 +143,6 @@ export default {
     },
     resizeGameRender: function(width) {
         this.gameSize = width * 0.65
-        console.log('render', width)
         this.renderer.setSize(this.gameSize, this.gameSize)
     },
     // Game Play Utilities
@@ -155,7 +152,6 @@ export default {
       }
       let verticies;
       verticies = this.board.children
-      console.log(this.gameGrid)
       let i = 0;
       for (i; i < verticies.length; i++) {
           let thisVertex;
@@ -184,12 +180,10 @@ export default {
       let intersects = []
       const raycaster = new Three.Raycaster();
       const pointer = new Three.Vector2();
-      console.log(this.renderer.domElement.getBoundingClientRect().x, this.gameSize)
       const offset_x = this.renderer.domElement.getBoundingClientRect().x
       const offset_y = this.renderer.domElement.getBoundingClientRect().y
       pointer.x = 2 * (evt.clientX - offset_x) / this.gameSize - 1
       pointer.y = -2 * (evt.clientY - offset_y) / this.gameSize + 1
-      console.log(evt.clientX, evt.clientY)
       raycaster.setFromCamera( pointer, this.camera );     
       intersects = raycaster.intersectObjects(this.scene.children)
       return intersects
@@ -214,7 +208,6 @@ export default {
           @mouseup="checkClickUp"   
           @mousemove="highlightMove"
           ref="container"
-          
       >
       </div>
   </div>
