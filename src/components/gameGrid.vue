@@ -113,33 +113,23 @@ export default {
       const intersects = this.findIntersects(evt)
       this.updateGridRender()
       if (intersects.length > 0) {
-        const clickedVertex = intersects[0]
-        clickedVertex.object.material = this.highlightMaterial
-        clickedVertex.object.geometry = this.highlightGeometry
-        if (clickedVertex.object.owner === 0) {
-            clickedVertex.object.owner = 3
-            this.coords = clickedVertex.object.coords
-            let tempOwner = 0
-            if (Number(this.gameData.activePlayer) == 1) {
-              tempOwner = -1
-            } else if (Number(this.gameData.activePlayer) == 2) {
-              tempOwner = -2
-            }
-            this.gameGrid[this.coords[0]][this.coords[1]][this.coords[2]] = tempOwner
-            this.socket.emit("updateGameGrid", this.gameGrid, this.coords, tempOwner, this.activeGameId)
-        }
+        const mousedVertex = intersects[0]
+        mousedVertex.object.material = this.highlightMaterial
+        mousedVertex.object.geometry = this.highlightGeometry
       } 
     },
     makeMove: function(evt) {
       const intersects = this.findIntersects(evt)
+      console.log(this.gameGrid)
       if (intersects.length > 0) {
-          let thisVertex = intersects[0]
-          const i = thisVertex.object.coords[0]
-          const j = thisVertex.object.coords[1]
-          const k = thisVertex.object.coords[2]
+          let clickedVertex = intersects[0]
+          const i = clickedVertex.object.coords[0]
+          const j = clickedVertex.object.coords[1]
+          const k = clickedVertex.object.coords[2]
           this.gameGrid[i][j][k] = 1
       }
       this.updateGridRender()
+      this.socket.emit("test",'ya buddy')
     },
     resizeGameRender: function(width) {
         this.gameSize = width * 0.65

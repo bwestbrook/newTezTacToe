@@ -19,13 +19,12 @@ let addressesInGame = []
 
 //const contractStorage = '../src/assets/contract-storage.json'
 
-const PORT = process.env.PORT || 3000;
-const URL = process.env.BASE_URL
-io.listen(PORT,URL)
-console.log('io up on ', PORT, URL)
-console.log(process.env)
+const PORT = process.env.PORT || 3001;
+io.listen(PORT)
+console.log('io up on ', PORT)
+//console.log(process.env)
 
-setInterval(() => io.emit('setPort', new Date().toTimeString()), 100);
+//setInterval(() => io.emit('setPort', new Date().toTimeString()), 1000);
 
 //io.emit("setPort", PORT)
 
@@ -88,8 +87,12 @@ io.on("connection", function(socket) {
 socket.on("resizeGame", function(width) {
   io.emit("resizeGame", width)
 
-});
 
+});
+socket.on("test", function(test) {
+  console.log(test)
    
 });
+});
+  
 
