@@ -20,7 +20,7 @@ let addressesInGame = []
 //const contractStorage = '../src/assets/contract-storage.json'
 
 const PORT = process.env.PORT || 3001;
-io.listen(PORT)
+//io.listen(PORT)
 console.log('io up on ', PORT)
 //console.log(process.env)
 
@@ -83,15 +83,12 @@ io.on("connection", function(socket) {
     } 
     console.log('updateGG')
     io.emit("updateGameGrid", gameGrid, gameId)
-});
-socket.on("resizeGame", function(width) {
-  io.emit("resizeGame", width)
-
-
-});
-socket.on("test", function(test) {
-  console.log(test)
-   
+  });
+  socket.on("resizeGame", function(width) {
+    io.emit("resizeGame", width)
+  });
+  socket.on("test", function(test) {
+    console.log(test)
 });
 });
   
