@@ -1,6 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 var webpack = require('webpack');
 module.exports = defineConfig({
+  publicPath: '/',
   devServer: {
     port: 3000,
     hot: true, // Enable Hot Module Replacement
