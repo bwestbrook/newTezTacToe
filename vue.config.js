@@ -6,7 +6,13 @@ module.exports = defineConfig({
     port: 3000,
     hot: true, // Enable Hot Module Replacement
     liveReload: true, // Enable live reloading
-    allowedHosts: 'all'
+    allowedHosts: 'all',
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
     },
   configureWebpack: {
    
