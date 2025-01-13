@@ -85,8 +85,8 @@ export default {
   },
   created() {    
 
-      this.socket = io(window.location.origin)
-    
+      this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
+      
       console.log('######################')
       console.log('######################')
       console.log('######################')
