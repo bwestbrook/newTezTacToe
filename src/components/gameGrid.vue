@@ -28,12 +28,12 @@ export default {
     this.board = new Three.Group(),
     // Materials
     this.defaultGeometry = new Three.SphereGeometry(0.05, 32, 16)
-    this.defaultMaterial = new Three.MeshMatcapMaterial({color:'blue'})
+    this.defaultMaterial = new Three.MeshNormalMaterial()
     this.highlightGeometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
     this.highlightMaterial = new Three.MeshMatcapMaterial( {color:'green'} )
     console.log(this.highlightMaterial)
     this.player1Geometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
-    this.player1Material = new Three.MeshMatcapMaterial( {color: 'red',} )
+    this.player1Material = new Three.MeshMatcapMaterial( {color: 'red',  opacity: 0.5} )
     this.player2Geometry = new Three.BoxGeometry(0.1, 0.1, 0.1)
     this.player2Material = new Three.MeshMatcapMaterial( {color: 'blue',  opacity: 0.5} )
     // General 
