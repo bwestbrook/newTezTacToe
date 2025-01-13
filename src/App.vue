@@ -84,7 +84,11 @@ export default {
     
   },
   created() {    
-      this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
+      console.log('######################')
+      console.log('######################')
+      console.log('######################')
+      console.log(this.socket)
+      this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/:8080")
       //this.socket = io("localhost:3000")
       this.tezos = Tezos
       this.getWallet()
