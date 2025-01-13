@@ -90,7 +90,7 @@ export default {
       console.log('######################')
       console.log('######################')
       console.log('######################')
-      //this.socket = io("localhost:3000")
+      this.socket = io("localhost:3000")
       console.log(this.socket)
       //const PORT = this.socket.io.engine.port
       //console.log(PORT)
