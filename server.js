@@ -22,6 +22,7 @@ let addressesInGame = []
 io.on("connection", function(socket) {
 
      // User Handling 
+    console.log(socket)
     console.log("user " + socket.id + " connected");
     idx = connectedUsers.length
     connectedUsers[idx] = (socket.id)
