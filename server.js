@@ -22,7 +22,8 @@ let addressesInGame = []
 const PORT = process.env.PORT || 3000;
 const URL = process.env.BASE_URL
 io.listen(PORT,URL)
-console.log('io up on ', PORT)
+console.log('io up on ', PORT, URL)
+console.log(process.env)
 
 setInterval(() => io.emit('setPort', new Date().toTimeString()), 100);
 
