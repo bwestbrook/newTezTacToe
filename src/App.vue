@@ -84,8 +84,8 @@ export default {
     
   },
   created() {    
-      //this.socket = io('http://localhost:3001')
-      this.socket = io('https://damp-spire-29654-cc0ffbb43258.herokuapp.com/')
+      this.socket = io('http://localhost:5007')
+      //this.socket = io('https://damp-spire-29654-cc0ffbb43258.herokuapp.com/')
       console.log('create')
       console.log(this.socket)
       this.tezos = Tezos
