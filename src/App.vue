@@ -84,16 +84,13 @@ export default {
     
   },
   created() {    
-      
       console.log('######################')
       console.log('######################')
       console.log('######################')
-      //this.socket = io('http://localhost:3001')
-      this.socket = io ('https://damp-spire-29654-cc0ffbb43258.herokuapp.com/')
+      this.socket = io('http://localhost:3001')
+      //this.socket = io('https://damp-spire-29654-cc0ffbb43258.herokuapp.com/')
+      console.log('create')
       console.log(this.socket)
-      //const PORT = this.socket.io.engine.port
-      //console.log(PORT)
-    
       this.tezos = Tezos
       this.getWallet()
   },
@@ -101,6 +98,11 @@ export default {
       window.addEventListener('resize', () =>{
         this.onResize()
       })
+            
+ 
+      //const PORT = this.socket.io.engine.port
+      //console.log(PORT)
+    
   }
 }
 </script>

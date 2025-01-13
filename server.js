@@ -70,8 +70,8 @@ io.on("connection", function(socket) {
               }
           }
       }
-      //console.log('emitting GGG')
-     io.emit("gameGrid", gameGrid, gameId)
+    console.log('emitting GGG')
+    io.emit("gameGrid", gameGrid, gameId)
   });
   socket.on("updateGameGrid", function(gameGrid, coords, owner, gameId) {
     console.log(coords, owner, gameId )

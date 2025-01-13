@@ -56,6 +56,7 @@ export default {
     // Set up socket to receive from server
     this.socket.on('gameGrid', (gameGrid) => {
       //
+      console.log('getting', gameGrid)
       this.gameGrid = gameGrid
     });
     this.socket.on('resizeGame', (width) => {
@@ -120,7 +121,7 @@ export default {
     },
     makeMove: function(evt) {
       const intersects = this.findIntersects(evt)
-      console.log(this.gameGrid)
+      console.log(this.socket)
       if (intersects.length > 0) {
           let clickedVertex = intersects[0]
           const i = clickedVertex.object.coords[0]
