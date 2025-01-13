@@ -91,12 +91,12 @@ export default {
         console.log(port)
       })
 
-      //this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
+      this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
       
       console.log('######################')
       console.log('######################')
       console.log('######################')
-      this.socket = io("localhost:3000")
+      //this.socket = io("localhost:3000")
       console.log(this.socket)
       //const PORT = this.socket.io.engine.port
       //console.log(PORT)
