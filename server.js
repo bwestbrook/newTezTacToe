@@ -23,7 +23,9 @@ const PORT = process.env.PORT || 3000;
 io.listen(PORT)
 console.log('io up on ', PORT)
 
-io.emit("setPort", PORT)
+setInterval(() => io.emit('setPort', new Date().toTimeString()), 100);
+
+//io.emit("setPort", PORT)
 
 io.on("connection", function(socket) {
 

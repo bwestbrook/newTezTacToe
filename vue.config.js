@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = defineConfig({
   publicPath: '/',
   devServer: {
-    port: 3000,
+    //port: 3000,
     hot: true, // Enable Hot Module Replacement
     liveReload: true, // Enable live reloading
     allowedHosts: 'all',
