@@ -2,7 +2,7 @@ const { connect } = require('http2');
 const { connected } = require('process');
 const cors = require('cors')();
 const server = require('express')();
-const http = require('http').createServer(server);
+const https = require('https').createServer(server);
 const io = require('socket.io')(http ,
         {
             cors: {
@@ -18,6 +18,11 @@ let usersInGame = []
 let addressesInGame = []
 
 //const contractStorage = '../src/assets/contract-storage.json'
+
+const PORT = process.env.PORT || 3001;
+io.listen(PORT)
+console.log('io up on ', PORT)
+
 
 io.on("connection", function(socket) {
 
@@ -83,6 +88,3 @@ socket.on("resizeGame", function(width) {
    
 });
 
-const PORT = process.env.PORT || 3001;
-io.listen(PORT)
-console.log('io up on ', PORT)
