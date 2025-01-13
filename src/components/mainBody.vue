@@ -13,13 +13,6 @@
           :socket="socket"
       />
       <div class="rules">
-          Create by specificying the XTZ/move you want to bet
-          or challeng in pending games there. See if its your turn on a pending game.
-          Once you have been paired with an opponenent your game(s) will become active       
-          Click on your active games and check out the board 
-          Once you've picked your next move "submit" it thte block chain
-          This sends "n" XTZ/move plust +0.01XTZ fee/move to the creators and thextz.life holder
-          If you get 4 in a row you win the 100% of the bets!
       </div>
       <div>aaaaaaaaa</div>
     </div>
