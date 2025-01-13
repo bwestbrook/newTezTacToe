@@ -82,8 +82,7 @@ socket.on("resizeGame", function(width) {
    
 });
 
-io.listen(process.env.PORT || 3000)
-//console.log('SOCKET', 3000)
-//http.listen(process.env.PORT || 3000, function() {
-//});
+const PORT = process.env.PORT || 3000;
+io.listen(PORT)
 
+console.log(PORT)
