@@ -90,7 +90,7 @@ export default {
       socket.on("setPort", function(port) {
         console.log(port)
       })
-
+      
       this.socket = io("https://damp-spire-29654-cc0ffbb43258.herokuapp.com/")
       
       console.log('######################')

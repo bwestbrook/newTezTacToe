@@ -4,8 +4,8 @@ module.exports = defineConfig({
   publicPath: '/',
   devServer: {
     //port: 3000,
-    hot: true, // Enable Hot Module Replacement
-    liveReload: true, // Enable live reloading
+    //hot: true, // Enable Hot Module Replacement
+    //liveReload: true, // Enable live reloading
     allowedHosts: 'all',
     },
   configureWebpack: {
